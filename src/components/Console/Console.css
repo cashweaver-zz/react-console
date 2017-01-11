@@ -1,0 +1,28 @@
+.console {
+  background: #eee;
+  font-family: monospace;
+  border: 2px solid #999;
+}
+.history {
+  padding: 15px;
+}
+
+.history ul {
+  margin: 0;
+  padding: 0;
+}
+
+.history li {
+  list-style: none;
+}
+
+.history .history-item {
+}
+
+
+.prompt {
+  display: block;
+  width: 100%;
+  background: #ccc;
+  padding: 15px;
+}
