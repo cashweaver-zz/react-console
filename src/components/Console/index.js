@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import History from './../History';
 import './Console.css';
 
@@ -19,7 +19,7 @@ class Console extends Component {
         'ArrowLeft',
         'ArrowRight',
       ],
-    }
+    };
 
     this.handleKeydown = this.handleKeydown.bind(this);
     this.handleClick = this.handleClick.bind(this);
@@ -28,14 +28,14 @@ class Console extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
 
     let initialCommand = '';
-    if ('command' in props) {
-      initialCommand = props.command;
+    if ('initialCommand' in props) {
+      initialCommand = props.initialCommand;
     }
 
     this.state = {
       commands: [initialCommand].concat(props.history.commands),
       commandIndex: 0,
-    }
+    };
   }
 
   componentDidMount() {
@@ -43,20 +43,20 @@ class Console extends Component {
     this.consoleElement.addEventListener('click', this.handleClick);
   }
 
+  componentWillUpdate() {
+    this.scrollWithNewInput();
+  }
+
   componentWillUnmount() {
     this.consoleElement.removeEventListener('keydown', this.handleKeydown);
     this.consoleElement.removeEventListener('click', this.handleClick);
-  }
-
-  componentWillUpdate() {
-    this.scrollWithNewInput();
   }
 
   scrollWithNewInput() {
     this.consoleElement.scrollTop = this.consoleElement.scrollHeight;
   }
 
-  handleClick(e) {
+  handleClick() {
     this.consoleElement.focus();
   }
 
@@ -87,18 +87,19 @@ class Console extends Component {
       if (this.state.commandIndex < this.state.commands.length - 1) {
         this.setState({
           commandIndex: this.state.commandIndex + 1,
-        })
+        });
       }
     } else if (e.code === 'ArrowDown') {
       if (this.state.commandIndex > 0) {
         this.setState({
           commandIndex: this.state.commandIndex - 1,
-        })
+        });
       }
     }
   }
 
   handleModifier() {
+    // TODO
   }
 
   handleBackspace() {
@@ -113,7 +114,7 @@ class Console extends Component {
   handleSubmit() {
     this.props.runCommand(this.state.commands[this.state.commandIndex]);
     this.setState({
-      commands: [''].concat(this.state.commands)
+      commands: [''].concat(this.state.commands),
     });
 
     this.setState({
@@ -124,9 +125,9 @@ class Console extends Component {
   render() {
     return (
       <div
-        ref={(el) => this.consoleElement = el}
+        ref={(el) => { this.consoleElement = el; }}
         className="console"
-        tabIndex="1"
+        tabIndex={0}
       >
         <ul>
           <History
@@ -142,5 +143,12 @@ class Console extends Component {
     );
   }
 }
+
+Console.propTypes = {
+  history: PropTypes.object.isRequired,
+  promptPrefix: PropTypes.string.isRequired,
+  initialCommand: PropTypes.string,
+  runCommand: PropTypes.func,
+};
 
 export default Console;

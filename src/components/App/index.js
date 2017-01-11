@@ -8,12 +8,12 @@ class App extends Component {
     super(props);
 
     this.state = {
-      promptPrefix: '$ ',
+      promptPrefix: '> ',
       history: {
         commands: [],
         results: [],
       },
-    }
+    };
 
     this.runCommand = this.runCommand.bind(this);
   }
