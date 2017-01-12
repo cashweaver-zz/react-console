@@ -40,6 +40,7 @@ class Console extends Component {
     this.state = {
       commands: [initialCommand].concat(props.history.commands),
       commandIndex: 0,
+      cursorIndex: 0,
     };
   }
 
@@ -96,6 +97,18 @@ class Console extends Component {
     return this.keyCodes.ignored.includes(keyCode);
   }
 
+  modifyCommand(e) {
+    const newCommands = this.state.commands;
+    const oldCommand = this.state.commands[this.state.commandIndex];
+    const newCommand = `${oldCommand.slice(0, this.state.cursorIndex)}${e.key}${oldCommand.slice(this.state.cursorIndex)}`;
+    newCommands[this.state.commandIndex] = newCommand;
+    this.setState({
+      commands: newCommands,
+    });
+
+    this.moveCursorRight();
+  }
+
   handleKeydown(e) {
     console.log(e);
 
@@ -110,19 +123,28 @@ class Console extends Component {
     } else if (this.isIgnoredKey(e.code)) {
       // Do nothing
     } else {
-      const newCommands = this.state.commands;
-      newCommands[this.state.commandIndex] += e.key;
-      this.setState({
-        commands: newCommands,
-      });
+      this.modifyCommand(e);
     }
+  }
+
+  moveCursorLeft() {
+    this.setState({
+      cursorIndex: (this.state.cursorIndex > 0) ? this.state.cursorIndex - 1 : 0,
+    });
+  }
+
+  moveCursorRight() {
+    this.setState({
+      cursorIndex: (this.state.cursorIndex < this.state.commands[this.state.commandIndex].length)
+        ? this.state.cursorIndex + 1 : this.state.commands[this.state.commandIndex].length,
+    });
   }
 
   handleArrow(e) {
     if (e.code === 'ArrowLeft') {
-      // TODO
+      this.moveCursorLeft();
     } else if (e.code === 'ArrowRight') {
-      // TODO
+      this.moveCursorRight();
     } else if (e.code === 'ArrowUp') {
       if (this.state.commandIndex < this.state.commands.length - 1) {
         this.setState({
@@ -182,7 +204,11 @@ class Console extends Component {
           />
           <li className="prompt">
             <span className="prefix">{this.props.promptPrefix}</span>
-            <span className="command">{this.state.commands[this.state.commandIndex]}</span>
+            <span className="command">
+              {this.state.commands[this.state.commandIndex].slice(0, this.state.cursorIndex)}
+              <span className="cursor" />
+              {this.state.commands[this.state.commandIndex].slice(this.state.cursorIndex)}
+            </span>
           </li>
         </ul>
       </div>
