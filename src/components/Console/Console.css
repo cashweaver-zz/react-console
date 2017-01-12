@@ -10,6 +10,7 @@
   width: 100vw;
   overflow-y: scroll;
   outline: none;
+  white-space: pre;
 }
 
 .console ul {

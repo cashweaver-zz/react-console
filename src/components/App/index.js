@@ -20,7 +20,6 @@ class App extends Component {
 
   runCommand(command) {
     const result = `result of running ${command}`;
-    console.log('runCommand', this.state.history);
     this.setState({
       history: {
         commands: [command].concat(this.state.history.commands),

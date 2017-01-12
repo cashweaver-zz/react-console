@@ -29,9 +29,6 @@ class Console extends Component {
     this.handleKeydown = this.handleKeydown.bind(this);
     this.handleClick = this.handleClick.bind(this);
 
-    this.handleBackspace = this.handleBackspace.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-
     let initialCommand = '';
     if ('initialCommand' in props) {
       initialCommand = props.initialCommand;
@@ -47,6 +44,12 @@ class Console extends Component {
   componentDidMount() {
     this.consoleElement.addEventListener('keydown', this.handleKeydown);
     this.consoleElement.addEventListener('click', this.handleClick);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      commands: nextProps.history.commands,
+    });
   }
 
   componentWillUpdate() {
@@ -110,8 +113,6 @@ class Console extends Component {
   }
 
   handleKeydown(e) {
-    console.log(e);
-
     if (this.isEnterKey(e.code)) {
       this.handleSubmit();
     } else if (this.isBackspaceKey(e.code)) {
@@ -170,14 +171,20 @@ class Console extends Component {
     }
   }
 
-  handleBackspace() {
-    const newCommands = this.state.commands;
-    const curCommand = newCommands[this.state.commandIndex];
-    newCommands[this.state.commandIndex] = curCommand.substring(0, curCommand.length - 1);
-    this.setState({
-      commands: newCommands,
-    });
+  handleBackspace(e) {
+    if (this.state.cursorIndex > 0) {
+      const newCommands = this.state.commands;
+      const oldCommand = this.state.commands[this.state.commandIndex];
+      const newCommand = `${oldCommand.slice(0, this.state.cursorIndex - 1)}${oldCommand.slice(this.state.cursorIndex)}`;
+      newCommands[this.state.commandIndex] = newCommand;
+
+      this.setState({
+        commands: newCommands,
+      });
+      this.moveCursorLeft();
+    }
   }
+
 
   handleSubmit() {
     this.props.runCommand(this.state.commands[this.state.commandIndex]);
