@@ -12,12 +12,17 @@ class Console extends Component {
         'AltLeft',
         'ControlRight',
         'ControlLeft',
+        'ShiftLeft',
+        'ShiftRight',
       ],
       arrows: [
         'ArrowUp',
         'ArrowDown',
         'ArrowLeft',
         'ArrowRight',
+      ],
+      ignored: [
+        'CapsLock',
       ],
     };
 
@@ -60,15 +65,50 @@ class Console extends Component {
     this.consoleElement.focus();
   }
 
+  isShiftKey(keyCode) {
+    return (
+      keyCode === 'ShiftLeft'
+      || keyCode === 'ShiftRight'
+    );
+  }
+
+  isEnterKey(keyCode) {
+    return (
+      keyCode === 'Enter'
+    );
+  }
+
+  isBackspaceKey(keyCode) {
+    return (
+      keyCode === 'Backspace'
+    );
+  }
+
+  isModifierKey(keyCode) {
+    return this.keyCodes.modifiers.includes(keyCode);
+  }
+
+  isArrowKey(keyCode) {
+    return this.keyCodes.arrows.includes(keyCode);
+  }
+
+  isIgnoredKey(keyCode) {
+    return this.keyCodes.ignored.includes(keyCode);
+  }
+
   handleKeydown(e) {
-    if (e.code === 'Enter') {
+    console.log(e);
+
+    if (this.isEnterKey(e.code)) {
       this.handleSubmit();
-    } else if (e.code === 'Backspace') {
+    } else if (this.isBackspaceKey(e.code)) {
       this.handleBackspace();
-    } else if (this.keyCodes.modifiers.includes(e.code)) {
+    } else if (this.isModifierKey(e.code)) {
       this.handleModifier(e);
-    } else if (this.keyCodes.arrows.includes(e.code)) {
+    } else if (this.isArrowKey(e.code)) {
       this.handleArrow(e);
+    } else if (this.isIgnoredKey(e.code)) {
+      // Do nothing
     } else {
       const newCommands = this.state.commands;
       newCommands[this.state.commandIndex] += e.key;
@@ -98,8 +138,14 @@ class Console extends Component {
     }
   }
 
-  handleModifier() {
-    // TODO
+  handleModifier(e) {
+    if (e.key === 'Shift') {
+      // Do nothing
+    } else if (e.key === 'Alt') {
+      // TODO
+    } else if (e.key === 'Control') {
+      // TODO
+    }
   }
 
   handleBackspace() {
