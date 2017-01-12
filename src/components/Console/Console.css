@@ -1,0 +1,29 @@
+* {
+  box-sizing: border-box;
+}
+
+.console {
+  background: #eee;
+  font-family: monospace;
+  padding: 15px;
+  height: 100vh;
+  width: 100vw;
+  overflow-y: scroll;
+  outline: none;
+  white-space: pre;
+}
+
+.console ul {
+  margin: 0;
+  padding: 0;
+}
+
+.console li {
+  list-style: none;
+}
+
+.cursor {
+  width: 1ch;
+  border-left: 1px solid #000;
+  height: 1ch;
+}
