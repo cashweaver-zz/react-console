@@ -148,14 +148,17 @@ class Console extends Component {
       this.moveCursorRight();
     } else if (e.code === 'ArrowUp') {
       if (this.state.commandIndex < this.state.commands.length - 1) {
+        const nextCommandIndex = this.state.commandIndex + 1;
         this.setState({
-          commandIndex: this.state.commandIndex + 1,
+          commandIndex: nextCommandIndex,
+          cursorIndex: (this.state.commands[nextCommandIndex].length < this.state.cursorIndex) ? this.state.commands[nextCommandIndex].length : this.state.cursorIndex,
         });
       }
     } else if (e.code === 'ArrowDown') {
       if (this.state.commandIndex > 0) {
+        const nextCommandIndex = this.state.commandIndex - 1;
         this.setState({
-          commandIndex: this.state.commandIndex - 1,
+          commandIndex: nextCommandIndex,
         });
       }
     }
